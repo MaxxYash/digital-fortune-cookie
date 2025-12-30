@@ -147,9 +147,15 @@ FORTUNES = [
 ]
 
 # ---------------- CONSTANTS ----------------
-EXCEL_FILE = "fortune_responses.xlsx"
-today = datetime.date.today().isoformat()
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+DATA_FILE = "fortune_responses.csv"
+
+if os.path.exists(DATA_FILE):
+    df_existing = pd.read_csv(DATA_FILE)
+    df_new = pd.concat([df_existing, pd.DataFrame([new_entry])], ignore_index=True)
+else:
+    df_new = pd.DataFrame([new_entry])
+
+df_new.to_csv(DATA_FILE, index=False)
 
 # ---------------- SESSION STATE ----------------
 if "fortune_date" not in st.session_state:
@@ -213,3 +219,4 @@ if st.session_state.fortune_text:
 
     if st.session_state.submitted:
         st.info("You’ve already submitted your feeling today 💛")
+
