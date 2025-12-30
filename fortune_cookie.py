@@ -1,6 +1,8 @@
 import random
 import datetime
 import streamlit as st
+import pandas as pd
+import os
 
 # ---------------- CONFIG ----------------
 st.set_page_config(
@@ -9,7 +11,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# ---------------- FORTUNES (250) ----------------
+# ---------------- FORTUNES ----------------
 FORTUNES = [
     "🏵️ Today will unfold more smoothly than you expect.",
     "🔮 A small moment today will quietly brighten your mood.",
@@ -141,42 +143,8 @@ FORTUNES = [
     "🌈 Balance will return before the day ends.",
     "☀️ Tomorrow will feel easier because of today.",
     "🧭 A calm certainty will settle in.",
-    "🏵️ Today will quietly turn out well.",
-
-    # --- Additional 50 fortunes ---
-    "🌬️ A gentle shift today will clear mental space.",
-    "🛤️ Progress will feel smoother once you begin.",
-    "🪁 A relaxed moment today will reset your energy.",
-    "🌞 Clarity will arrive when you stop forcing it.",
-    "🧭 A small adjustment will improve the outcome.",
-    "🌈 A positive tone will shape the rest of the day.",
-    "🕯️ A calm choice today will feel wise later.",
-    "🧩 Something confusing will simplify itself.",
-    "🕊️ Ease will return sooner than expected.",
-    "✨ A subtle success today will feel satisfying.",
-
-    "🌿 Today will carry a sense of quiet balance.",
-    "📅 The day will reward thoughtful pacing.",
-    "🧠 Insight will arrive between tasks.",
-    "🪵 Grounded effort will feel rewarding.",
-    "🌊 The flow of the day will feel cooperative.",
-    "🛎️ A helpful signal will arrive at the right time.",
-    "🧭 Direction will feel more natural today.",
-    "🌤️ Lightness will return after a brief pause.",
-    "🪄 Something ordinary will feel special.",
-    "🌞 Steady optimism will guide the day.",
-
-    "🧳 A future plan will feel reassuring today.",
-    "🗺️ Perspective will widen naturally.",
-    "🚲 Momentum will build without strain.",
-    "🕰️ Timing today will quietly support you.",
-    "📎 A small connection will prove useful.",
-    "🪶 A lighter approach will bring clarity.",
-    "🌼 Calm confidence will surface today.",
-    "✨ Today will confirm quiet progress.",
-    "🕊️ Peace will follow steady effort.",
-    "🍀 The day will gently favor you."
-] 
+    "🏵️ Today will quietly turn out well."
+]
 
 # ---------------- CONSTANTS ----------------
 EXCEL_FILE = "fortune_responses.xlsx"
