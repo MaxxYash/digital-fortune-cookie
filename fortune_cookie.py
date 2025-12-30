@@ -160,29 +160,11 @@ if "fortune_date" not in st.session_state:
 if st.session_state.submitted:
     # ---------------- THANK YOU PAGE ----------------
     st.title("🎉 Thank You!")
-    st.write("Your fortune has been submitted and your feeling has been recorded. Have a wonderful day! ✨")
-    st.snow()
-else:
-    st.title("🍪 Digital Fortune Cookie")
-    
-   DATA_FILE = "fortune_responses.csv"
-today = datetime.date.today().isoformat()
-
-# ---------------- SESSION STATE ----------------
-if "fortune_date" not in st.session_state:
-    st.session_state.fortune_date = None
-    st.session_state.fortune_text = None
-    st.session_state.submitted = False
-
-# ---------------- MAIN LOGIC ----------------
-if st.session_state.submitted:
-    # ---------------- THANK YOU PAGE ----------------
-    st.title("🎉 Thank You!")
     st.write("Have a wonderful day! ✨")
     st.snow()
 else:
     st.title("🍪 Digital Fortune Cookie")
-    
+
     # ---------------- OPEN FORTUNE ----------------
     if st.button("✨ Open My Fortune Cookie"):
         if st.session_state.fortune_date != today:
@@ -192,39 +174,33 @@ else:
             st.snow()
         else:
             st.info("You've already opened your fortune today 💫")
-    
+
     # ---------------- SHOW FORTUNE ----------------
     if st.session_state.fortune_text:
         st.success(st.session_state.fortune_text)
-        
+
         feeling = st.radio(
             "Which feeling would you like to spread today?",
             ["😊 Joy", "🌿 Calm", "💛 Kindness", "🙏 Gratitude", "🌟 Encouragement", "🤝 Support", "✨ Positivity"]
         )
-        
+
         # ---------------- SUBMIT BUTTON ----------------
         if feeling:
             if st.button("📩 Submit My Feeling"):
-                
+
                 new_entry = {
                     "Date": today,
                     "Fortune": st.session_state.fortune_text,
                     "Feeling": feeling
                 }
-                
+
                 if os.path.exists(DATA_FILE):
                     df = pd.read_csv(DATA_FILE)
                     df = pd.concat([df, pd.DataFrame([new_entry])], ignore_index=True)
                 else:
                     df = pd.DataFrame([new_entry])
-                
+
                 df.to_csv(DATA_FILE, index=False)
-                
+
                 # Set submitted state
                 st.session_state.submitted = True
-
-# Optional: show info if user already submitted (still on same page)
-if st.session_state.submitted and not st.session_state.fortune_text:
-    st.title("🎉 Thank You!")
-    st.write("Your fortune has been submitted and your feeling has been recorded. Have a wonderful day! ✨")
-    st.balloons()
