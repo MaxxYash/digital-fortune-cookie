@@ -161,7 +161,25 @@ if st.session_state.submitted:
     # ---------------- THANK YOU PAGE ----------------
     st.title("🎉 Thank You!")
     st.write("Your fortune has been submitted and your feeling has been recorded. Have a wonderful day! ✨")
-    st.balloons()
+    st.snow()
+else:
+    st.title("🍪 Digital Fortune Cookie")
+    
+   DATA_FILE = "fortune_responses.csv"
+today = datetime.date.today().isoformat()
+
+# ---------------- SESSION STATE ----------------
+if "fortune_date" not in st.session_state:
+    st.session_state.fortune_date = None
+    st.session_state.fortune_text = None
+    st.session_state.submitted = False
+
+# ---------------- MAIN LOGIC ----------------
+if st.session_state.submitted:
+    # ---------------- THANK YOU PAGE ----------------
+    st.title("🎉 Thank You!")
+    st.write("Have a wonderful day! ✨")
+    st.snow()
 else:
     st.title("🍪 Digital Fortune Cookie")
     
@@ -171,7 +189,7 @@ else:
             st.session_state.fortune_text = random.choice(FORTUNES)
             st.session_state.fortune_date = today
             st.session_state.submitted = False
-            st.balloons()
+            st.snow()
         else:
             st.info("You've already opened your fortune today 💫")
     
@@ -204,6 +222,9 @@ else:
                 
                 # Set submitted state
                 st.session_state.submitted = True
-                
-                # Streamlit rerun will now show Thank You page
-                st.experimental_rerun()
+
+# Optional: show info if user already submitted (still on same page)
+if st.session_state.submitted and not st.session_state.fortune_text:
+    st.title("🎉 Thank You!")
+    st.write("Your fortune has been submitted and your feeling has been recorded. Have a wonderful day! ✨")
+    st.balloons()
