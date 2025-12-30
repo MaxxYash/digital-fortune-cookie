@@ -171,7 +171,15 @@ if st.session_state.fortune_text:
 
     feeling = st.radio(
         "Which feeling would you like to spread today?",
-        ["😊 Joy", "🌿 Calm", "💛 Kindness", "🙏 Gratitude"]
+        [
+            "😊 Joy",
+            "🌿 Calm",
+            "💛 Kindness",
+            "🙏 Gratitude",
+            "🌟 Encouragement",
+            "🤝 Support",
+            "✨ Positivity"
+         ]
     )
 
     if feeling and not st.session_state.submitted:
