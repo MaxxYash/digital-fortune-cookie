@@ -219,4 +219,3 @@ if st.session_state.fortune_text:
 
     if st.session_state.submitted:
         st.info("You’ve already submitted your feeling today 💛")
-
