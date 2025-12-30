@@ -148,14 +148,8 @@ FORTUNES = [
 
 # ---------------- CONSTANTS ----------------
 DATA_FILE = "fortune_responses.csv"
-
-if os.path.exists(DATA_FILE):
-    df_existing = pd.read_csv(DATA_FILE)
-    df_new = pd.concat([df_existing, pd.DataFrame([new_entry])], ignore_index=True)
-else:
-    df_new = pd.DataFrame([new_entry])
-
-df_new.to_csv(DATA_FILE, index=False)
+today = datetime.date.today().isoformat()
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # ---------------- SESSION STATE ----------------
 if "fortune_date" not in st.session_state:
@@ -191,13 +185,12 @@ if st.session_state.fortune_text:
             "🌟 Encouragement",
             "🤝 Support",
             "✨ Positivity"
-        ],
-        key="feeling_radio"
+        ]
     )
 
-    # ---------------- SUBMIT BUTTON ----------------
     if feeling and not st.session_state.submitted:
         if st.button("📩 Submit My Feeling"):
+
             new_entry = {
                 "Date": today,
                 "Timestamp": timestamp,
@@ -205,14 +198,16 @@ if st.session_state.fortune_text:
                 "Feeling": feeling
             }
 
-            # If file exists, append
-            if os.path.exists(EXCEL_FILE):
-                df_existing = pd.read_excel(EXCEL_FILE)
-                df_new = pd.concat([df_existing, pd.DataFrame([new_entry])], ignore_index=True)
+            if os.path.exists(DATA_FILE):
+                df_existing = pd.read_csv(DATA_FILE)
+                df_new = pd.concat(
+                    [df_existing, pd.DataFrame([new_entry])],
+                    ignore_index=True
+                )
             else:
                 df_new = pd.DataFrame([new_entry])
 
-            df_new.to_excel(EXCEL_FILE, index=False)
+            df_new.to_csv(DATA_FILE, index=False)
 
             st.session_state.submitted = True
             st.success("✨ Thank you! Your response has been recorded.")
