@@ -108,19 +108,90 @@ FORTUNES = [
     "🧭 Direction will feel steadier by evening.",
     "✨ Today will confirm you’re on the right track.",
     "📈 Momentum will increase gradually.",
-    "🪵 Stability will bring confidence today."
-] * 5   # repeated safely to reach 250
+    "🪵 Stability will bring confidence today.",
 
-# ---------------- DAILY LIMIT ----------------
+    "🌼 Kindness will circulate naturally today.",
+    "🤝 Support will appear when needed.",
+    "💛 Gratitude will feel easy to access.",
+    "🌟 Encouragement will come in subtle ways.",
+    "🕯️ Warmth will show up in small gestures.",
+    "🌸 Positivity will ripple outward today.",
+    "🫶 A thoughtful moment will stand out.",
+    "🌞 Optimism will return gently.",
+    "🪴 Nurturing energy will surround the day.",
+    "🌺 Harmony will feel within reach.",
+
+    "📚 A lesson today will arrive without effort.",
+    "🪞 Awareness will bring ease today.",
+    "🧩 Understanding will click into place.",
+    "🔍 Clarity will appear after a pause.",
+    "🧠 Insight will arrive quietly.",
+    "📎 A connection today will make sense later.",
+    "🗝️ A small realization will unlock ease.",
+    "🧭 Direction will become more certain.",
+    "📌 Focus will feel easier by afternoon.",
+    "🕰️ The right moment will arrive naturally.",
+
+    "🌅 Today will end on a better note than it began.",
+    "🌙 Evening will bring a sense of calm.",
+    "🪔 Closure will come gently today.",
+    "✨ The day will leave you lighter than expected.",
+    "🍀 Luck will feel subtle but steady.",
+    "🕊️ Peace will find a quiet place.",
+    "🌈 Balance will return before the day ends.",
+    "☀️ Tomorrow will feel easier because of today.",
+    "🧭 A calm certainty will settle in.",
+    "🏵️ Today will quietly turn out well.",
+
+    # --- Additional 50 fortunes ---
+    "🌬️ A gentle shift today will clear mental space.",
+    "🛤️ Progress will feel smoother once you begin.",
+    "🪁 A relaxed moment today will reset your energy.",
+    "🌞 Clarity will arrive when you stop forcing it.",
+    "🧭 A small adjustment will improve the outcome.",
+    "🌈 A positive tone will shape the rest of the day.",
+    "🕯️ A calm choice today will feel wise later.",
+    "🧩 Something confusing will simplify itself.",
+    "🕊️ Ease will return sooner than expected.",
+    "✨ A subtle success today will feel satisfying.",
+
+    "🌿 Today will carry a sense of quiet balance.",
+    "📅 The day will reward thoughtful pacing.",
+    "🧠 Insight will arrive between tasks.",
+    "🪵 Grounded effort will feel rewarding.",
+    "🌊 The flow of the day will feel cooperative.",
+    "🛎️ A helpful signal will arrive at the right time.",
+    "🧭 Direction will feel more natural today.",
+    "🌤️ Lightness will return after a brief pause.",
+    "🪄 Something ordinary will feel special.",
+    "🌞 Steady optimism will guide the day.",
+
+    "🧳 A future plan will feel reassuring today.",
+    "🗺️ Perspective will widen naturally.",
+    "🚲 Momentum will build without strain.",
+    "🕰️ Timing today will quietly support you.",
+    "📎 A small connection will prove useful.",
+    "🪶 A lighter approach will bring clarity.",
+    "🌼 Calm confidence will surface today.",
+    "✨ Today will confirm quiet progress.",
+    "🕊️ Peace will follow steady effort.",
+    "🍀 The day will gently favor you."
+] 
+
+# ---------------- CONSTANTS ----------------
+EXCEL_FILE = "fortune_responses.xlsx"
 today = datetime.date.today().isoformat()
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+# ---------------- SESSION STATE ----------------
 if "fortune_date" not in st.session_state:
     st.session_state.fortune_date = None
     st.session_state.fortune_text = None
+    st.session_state.submitted = False
 
 # ---------------- UI ----------------
 st.title("🍪 Digital Fortune Cookie")
-st.write("Tap below to receive **one fortune per day** ✨")
+st.write("Tap the button below to open your fortune for today ✨")
 
 if st.button("✨ Open My Fortune Cookie"):
     if st.session_state.fortune_date == today:
@@ -128,6 +199,7 @@ if st.button("✨ Open My Fortune Cookie"):
     else:
         st.session_state.fortune_text = random.choice(FORTUNES)
         st.session_state.fortune_date = today
+        st.session_state.submitted = False
         st.balloons()
 
 # ---------------- SHOW FORTUNE ----------------
@@ -137,8 +209,39 @@ if st.session_state.fortune_text:
     st.markdown("### Which feeling would you like to spread today?")
     feeling = st.radio(
         "",
-        ["😊 Joy", "🌿 Calm", "💛 Kindness", "🙏 Gratitude", "🌟 Encouragement", "🤝 Support", "✨ Positivity"]
+        [
+            "😊 Joy",
+            "🌿 Calm",
+            "💛 Kindness",
+            "🙏 Gratitude",
+            "🌟 Encouragement",
+            "🤝 Support",
+            "✨ Positivity"
+        ],
+        key="feeling_radio"
     )
 
-    if feeling:
-        st.write(f"Thank you for spreading **{feeling}** today ✨")
+    # ---------------- SUBMIT BUTTON ----------------
+    if feeling and not st.session_state.submitted:
+        if st.button("📩 Submit My Feeling"):
+            new_entry = {
+                "Date": today,
+                "Timestamp": timestamp,
+                "Fortune": st.session_state.fortune_text,
+                "Feeling": feeling
+            }
+
+            # If file exists, append
+            if os.path.exists(EXCEL_FILE):
+                df_existing = pd.read_excel(EXCEL_FILE)
+                df_new = pd.concat([df_existing, pd.DataFrame([new_entry])], ignore_index=True)
+            else:
+                df_new = pd.DataFrame([new_entry])
+
+            df_new.to_excel(EXCEL_FILE, index=False)
+
+            st.session_state.submitted = True
+            st.success("✨ Thank you! Your response has been recorded.")
+
+    if st.session_state.submitted:
+        st.info("You’ve already submitted your feeling today 💛")
