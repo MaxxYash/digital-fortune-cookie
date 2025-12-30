@@ -149,43 +149,29 @@ FORTUNES = [
 # ---------------- CONSTANTS ----------------
 DATA_FILE = "fortune_responses.csv"
 today = datetime.date.today().isoformat()
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-# ---------------- SESSION STATE ----------------
 if "fortune_date" not in st.session_state:
     st.session_state.fortune_date = None
     st.session_state.fortune_text = None
     st.session_state.submitted = False
 
-# ---------------- UI ----------------
 st.title("🍪 Digital Fortune Cookie")
-st.write("Tap the button below to open your fortune for today ✨")
 
 if st.button("✨ Open My Fortune Cookie"):
-    if st.session_state.fortune_date == today:
-        st.info("You've already opened your fortune today 💫")
-    else:
+    if st.session_state.fortune_date != today:
         st.session_state.fortune_text = random.choice(FORTUNES)
         st.session_state.fortune_date = today
         st.session_state.submitted = False
         st.balloons()
+    else:
+        st.info("You've already opened your fortune today 💫")
 
-# ---------------- SHOW FORTUNE ----------------
 if st.session_state.fortune_text:
     st.success(st.session_state.fortune_text)
 
-    st.markdown("### Which feeling would you like to spread today?")
     feeling = st.radio(
-        "",
-        [
-            "😊 Joy",
-            "🌿 Calm",
-            "💛 Kindness",
-            "🙏 Gratitude",
-            "🌟 Encouragement",
-            "🤝 Support",
-            "✨ Positivity"
-        ]
+        "Which feeling would you like to spread today?",
+        ["😊 Joy", "🌿 Calm", "💛 Kindness", "🙏 Gratitude"]
     )
 
     if feeling and not st.session_state.submitted:
@@ -193,24 +179,20 @@ if st.session_state.fortune_text:
 
             new_entry = {
                 "Date": today,
-                "Timestamp": timestamp,
                 "Fortune": st.session_state.fortune_text,
                 "Feeling": feeling
             }
 
             if os.path.exists(DATA_FILE):
-                df_existing = pd.read_csv(DATA_FILE)
-                df_new = pd.concat(
-                    [df_existing, pd.DataFrame([new_entry])],
-                    ignore_index=True
-                )
+                df = pd.read_csv(DATA_FILE)
+                df = pd.concat([df, pd.DataFrame([new_entry])], ignore_index=True)
             else:
-                df_new = pd.DataFrame([new_entry])
+                df = pd.DataFrame([new_entry])
 
-            df_new.to_csv(DATA_FILE, index=False)
+            df.to_csv(DATA_FILE, index=False)
 
             st.session_state.submitted = True
-            st.success("✨ Thank you! Your response has been recorded.")
+            st.success("✨ Response saved successfully!")
 
     if st.session_state.submitted:
-        st.info("You’ve already submitted your feeling today 💛")
+        st.info("You have already submitted today 💛")
